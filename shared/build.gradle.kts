@@ -41,12 +41,6 @@ kotlin {
   }
 
   sourceSets {
-    androidMain.dependencies {
-      implementation(libs.sql.android.driver)
-      implementation(compose.ui)
-      implementation(compose.material3)
-    }
-
     commonMain.dependencies {
       implementation(libs.atomic.fu)
       implementation(libs.kotlinx.coroutines.core)
@@ -54,6 +48,14 @@ kotlin {
       implementation(libs.sql.runtime)
       implementation(compose.runtime)
       implementation(compose.foundation)
+      implementation(compose.material3)
+      implementation(libs.compose.navigation.mp)
+      implementation(compose.components.resources)
+    }
+
+    androidMain.dependencies {
+      implementation(libs.sql.android.driver)
+      implementation(compose.ui)
       implementation(compose.material3)
     }
 
@@ -90,10 +92,6 @@ android {
       isMinifyEnabled = false
       isShrinkResources = false
     }
-  }
-
-  buildFeatures {
-    viewBinding = true
   }
 
   lint {

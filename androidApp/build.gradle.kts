@@ -4,6 +4,8 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.googleServices)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
 }
 
 kotlin {
@@ -14,7 +16,7 @@ android {
     namespace = "com.example.recoverylogger"
     compileSdk = 36
     defaultConfig {
-        applicationId = "com.example.recoverylooger"
+        applicationId = "com.example.recoverylogger"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
@@ -42,9 +44,7 @@ android {
 }
 
 dependencies {
-    implementation(projects.shared)
     implementation(project(":shared"))
-
 
   // Use Compose BOM for Android Compose dependencies
     implementation(platform(libs.compose.bom))
@@ -56,7 +56,8 @@ dependencies {
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.material3)
-    implementation(libs.compose.navigation)
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
 
     // Firebase dependencies
     implementation(platform(libs.firebase.bom))
