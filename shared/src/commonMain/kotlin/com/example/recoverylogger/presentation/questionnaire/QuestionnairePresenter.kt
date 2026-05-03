@@ -25,13 +25,4 @@ class QuestionnairePresenter(private val questionnaire: QuestionnaireDefinition)
         }
         return currentIndex == questionnaire.questions.size - 1
     }
-
-    fun getLastVisibleQuestionIndex(answers: Map<String, Answer>): Int {
-        for (i in questionnaire.questions.size - 1 downTo 0) {
-            if (!questionnaire.shouldSkipQuestion(questionnaire.questions[i].id, answers)) {
-                return i
-            }
-        }
-        return questionnaire.questions.size - 1
-    }
 }
