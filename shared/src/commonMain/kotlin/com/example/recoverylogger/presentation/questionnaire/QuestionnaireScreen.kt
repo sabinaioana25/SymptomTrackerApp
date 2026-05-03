@@ -17,17 +17,22 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,120 +47,119 @@ import com.example.recoverylogger.domain.model.question.YesNoValue
 fun QuestionnaireScreenHoist(
     viewModel: QuestionnaireViewModel,
     onEntrySubmitted: () -> Unit,
-    onBackPressed: () -> Unit
+    modifier: Modifier = Modifier
 ) {
     val state by viewModel.state.collectAsState()
-    val navEvent by viewModel.navEvent.collectAsState()
+    val onIntent: (QuestionnaireIntent) -> Unit = viewModel::processIntent
 
-    LaunchedEffect(navEvent) {
-        when (navEvent) {
-            QuestionnaireNavEvent.EntrySubmitted -> {
-                onEntrySubmitted()
-                viewModel.clearNavEvent()
-            }
-            QuestionnaireNavEvent.BackPressed -> {
-                onBackPressed()
-                viewModel.clearNavEvent()
-            }
-            null -> {}
-        }
+    LaunchedEffect(state.isSubmitted) {
+        if (state.isSubmitted) onEntrySubmitted()
     }
 
     QuestionnaireScreen(
         state = state,
-        onIntent = viewModel::processIntent
+        onIntent = onIntent,
+        modifier = modifier
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuestionnaireScreen(
     state: QuestionnaireState,
-    onIntent: (QuestionnaireIntent) -> Unit
+    onIntent: (QuestionnaireIntent) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        Text(
-            text = "Question ${state.currentIndex} of ${state.visibleQuestions.size - 1}",
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        LinearProgressIndicator(
-            progress = { state.progress },
-            modifier = Modifier.fillMaxWidth()
-        )
+    val snackBarHostState = remember { SnackbarHostState() }
 
-        Spacer(modifier = Modifier.height(24.dp))
+    LaunchedEffect(state.error) {
+        state.error?.let { error ->
+            snackBarHostState.showSnackbar(error.message)
+            onIntent(QuestionnaireIntent.DismissError)
+        }
+    }
 
-        Box(
+    Scaffold(
+        modifier = modifier.fillMaxSize(),
+        snackbarHost = { SnackbarHost(snackBarHostState) }
+    ) { innerPadding ->
+        Column(
             modifier = Modifier
-                .weight(1f)
-                .verticalScroll(rememberScrollState())
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(16.dp)
         ) {
-            QuestionContent(
-                question = state.currentQuestion,
-                currentAnswer = state.answers[state.currentQuestion.id],
-                onAnswer = { answer ->
-                    onIntent(QuestionnaireIntent.Answer(state.currentQuestion.id, answer))
-                }
-            )
-        }
-
-        state.error?.let { msg ->
-            Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = msg,
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodySmall
+                text = "Question ${state.currentIndex} of ${state.visibleQuestions.size - 1}",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-        }
+            Spacer(modifier = Modifier.height(4.dp))
+            LinearProgressIndicator(
+                progress = { state.progress },
+                modifier = Modifier.fillMaxWidth()
+            )
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            TextButton(
-                onClick = {
-                    if (state.isFirstQuestion) {
-                        onIntent(QuestionnaireIntent.Back)
-                    } else {
-                        onIntent(QuestionnaireIntent.Previous)
-                    }
-                },
-                enabled = true
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .verticalScroll(rememberScrollState())
             ) {
-                Text(if (state.isFirstQuestion) "Cancel" else "Back")
+                QuestionContent(
+                    question = state.currentQuestion,
+                    currentAnswer = state.answers[state.currentQuestion.id],
+                    onAnswer = { answer ->
+                        onIntent(QuestionnaireIntent.Answer(state.currentQuestion.id, answer))
+                    }
+                )
             }
 
-            if (state.isLastQuestion) {
-                Button(
-                    onClick = { onIntent(QuestionnaireIntent.Submit) },
-                    enabled = state.isCurrentAnswered && !state.isSubmitting
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                TextButton(
+                    onClick = {
+                        if (state.isFirstQuestion) {
+                            onIntent(QuestionnaireIntent.Back)
+                        } else {
+                            onIntent(QuestionnaireIntent.Previous)
+                        }
+                    },
+                    enabled = true
                 ) {
-                    if (state.isSubmitting) {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .height(18.dp)
-                                .width(18.dp),
-                            strokeWidth = 2.dp,
-                            color = Color.White
-                        )
-                    } else {
-                        Text("Submit")
-                    }
+                    Text(if (state.isFirstQuestion) "Cancel" else "Back")
                 }
-            } else {
-                Button(
-                    onClick = { onIntent(QuestionnaireIntent.Next) },
-                    enabled = state.isCurrentAnswered
-                ) {
-                    Text("Next")
+
+                if (state.isLastQuestion) {
+                    Button(
+                        onClick = { onIntent(QuestionnaireIntent.Submit) },
+                        enabled = state.isCurrentAnswered && !state.isSubmitting
+                    ) {
+                        if (state.isSubmitting) {
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .height(18.dp)
+                                    .width(18.dp),
+                                strokeWidth = 2.dp,
+                                color = Color.White
+                            )
+                        } else {
+                            Text("Submit")
+                        }
+                    }
+                } else {
+                    Button(
+                        onClick = { onIntent(QuestionnaireIntent.Next) },
+                        enabled = state.isCurrentAnswered
+                    ) {
+                        Text("Next")
+                    }
                 }
             }
         }

@@ -27,7 +27,7 @@ import com.example.recoverylogger.android.presentation.sign_in.SignInScreen
 import com.example.recoverylogger.android.presentation.sign_in.SignInViewModel
 import com.example.recoverylogger.presentation.entry.EntryLogContent
 import com.example.recoverylogger.presentation.note.NoteViewModel
-import com.example.recoverylogger.presentation.questionnaire.QuestionnaireScreen
+import com.example.recoverylogger.presentation.questionnaire.QuestionnaireScreenHoist
 import com.example.recoverylogger.presentation.questionnaire.SuccessScreen
 import kotlinx.coroutines.launch
 
@@ -51,20 +51,15 @@ fun AppNavigator(
         val parentEntry = remember(backStackEntry) {
           navController.getBackStackEntry(Route.ENTRY_FLOW)
         }
-        val viewModel = hiltViewModel<QuestionnaireAndroidViewModel>(parentEntry)
-        val state by viewModel.state.collectAsStateWithLifecycle()
+        val androidViewModel = hiltViewModel<QuestionnaireAndroidViewModel>(parentEntry)
 
-        LaunchedEffect(state.isSubmitted) {
-          if (state.isSubmitted) {
+        QuestionnaireScreenHoist(
+          viewModel = androidViewModel.viewModel,
+          onEntrySubmitted = {
             navController.navigate(Route.SUCCESS) {
               popUpTo(Route.QUESTIONNAIRE) { inclusive = true }
             }
           }
-        }
-
-        QuestionnaireScreen(
-          state = state,
-          onIntent = viewModel::processIntent
         )
       }
 

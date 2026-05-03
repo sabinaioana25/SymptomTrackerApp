@@ -26,16 +26,13 @@ class QuestionnaireViewModel(
     private val _state = MutableStateFlow(QuestionnaireState())
     val state: StateFlow<QuestionnaireState> = _state.asStateFlow()
 
-    private val _navEvent = MutableStateFlow<QuestionnaireNavEvent?>(null)
-    val navEvent: StateFlow<QuestionnaireNavEvent?> = _navEvent.asStateFlow()
-
     fun processIntent(intent: QuestionnaireIntent) {
         when (intent) {
             is QuestionnaireIntent.Answer    -> recordAnswer(intent.questionId, intent.value)
             is QuestionnaireIntent.Next      -> goToNext()
             is QuestionnaireIntent.Previous  -> goToPrevious()
             is QuestionnaireIntent.Submit    -> submitEntry()
-            is QuestionnaireIntent.Back      -> onBackPressed()
+            is QuestionnaireIntent.Back      -> Unit
             is QuestionnaireIntent.DismissError -> _state.update { it.copy(error = null) }
         }
     }
@@ -100,33 +97,30 @@ class QuestionnaireViewModel(
         )
 
         scope.launch {
-            _state.update { it.copy(isSubmitting = true, error = null) }
+            _state.update {
+                it.copy(
+                    loadingState = LoadingState.InProgress(LoadingState.Operation.SUBMITTING_ENTRY),
+                    error = null
+                )
+            }
             when (val result = saveEntryUseCase(entry)) {
-                is DataResult.Success -> {
-                    _state.update {
-                        it.copy(
-                            isSubmitting = false,
-                            isSubmitted = true,
-                            lastSubmittedEntry = entry
-                        )
-                    }
-                    _navEvent.value = QuestionnaireNavEvent.EntrySubmitted
+                is DataResult.Success -> _state.update {
+                    it.copy(
+                        loadingState = LoadingState.Idle,
+                        isSubmitted = true,
+                        lastSubmittedEntry = entry
+                    )
                 }
                 is DataResult.Error -> _state.update {
                     it.copy(
-                        isSubmitting = false,
-                        error = result.exception.message ?: "Failed to save entry"
+                        loadingState = LoadingState.Idle,
+                        error = result.toUiError(
+                            defaultMessage = "Failed to save entry",
+                            operation = LoadingState.Operation.SUBMITTING_ENTRY
+                        )
                     )
                 }
             }
         }
-    }
-
-    private fun onBackPressed() {
-        _navEvent.value = QuestionnaireNavEvent.BackPressed
-    }
-
-    fun clearNavEvent() {
-        _navEvent.value = null
     }
 }
