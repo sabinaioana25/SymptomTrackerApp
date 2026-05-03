@@ -20,7 +20,8 @@ import com.example.recoverylogger.android.presentation.sign_in.UserData
 fun ProfileScreen(
   userData: UserData?,
   onSignOut: () -> Unit,
-  onGoToNotes: () -> Unit
+  onGoToNotes: () -> Unit,
+  onViewEntries: () -> Unit
 ) {
   Column(
     modifier = Modifier.fillMaxSize(),
@@ -40,6 +41,14 @@ fun ProfileScreen(
     Button(onClick = onGoToNotes) {
       Text(text = "My Notes")
     }
+
+    Spacer(modifier = Modifier.height(8.dp))
+
+    Button(onClick = onViewEntries) {
+      Text(text = "View All Entries")
+    }
+
+    Spacer(modifier = Modifier.height(8.dp))
 
     Button(onClick = onSignOut) {
       Text(text = "Sign out")

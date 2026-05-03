@@ -1,6 +1,5 @@
 package com.example.recoverylogger.android.presentation.sign_in
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,14 +13,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 
+private const val SIGN_IN = "Sign In"
+
 @Composable
 fun SignInScreen(
   state: SignInState,
   onSignInClick: () -> Unit
 ) {
   val context = LocalContext.current
-  LaunchedEffect(key1 = state.signInError) {
-    state.signInError?.let { error ->
+  LaunchedEffect(key1 = state.isError) {
+    state.isError?.let { error ->
       Toast.makeText(
         context,
         error,
@@ -37,8 +38,7 @@ fun SignInScreen(
     contentAlignment = Alignment.Center
   ) {
     Button(onClick = onSignInClick) {
-      Text(text = "Sign In")
-      Log.i("SignInScreen","button pressed")
+      Text(text = SIGN_IN)
     }
   }
 }

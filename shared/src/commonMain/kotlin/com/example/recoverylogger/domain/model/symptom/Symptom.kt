@@ -1,4 +1,4 @@
-package com.example.recoverylogger.domain.model
+package com.example.recoverylogger.domain.model.symptom
 
 data class Symptom(
   val id: String,

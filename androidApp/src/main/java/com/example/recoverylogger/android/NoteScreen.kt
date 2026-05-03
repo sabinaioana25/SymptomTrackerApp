@@ -18,7 +18,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.recoverylogger.presentation.NoteViewModel
+import com.example.recoverylogger.presentation.note.NoteViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

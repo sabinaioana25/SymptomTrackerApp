@@ -1,6 +1,6 @@
 package com.example.recoverylogger.domain.repository
 
-import com.example.recoverylogger.domain.model.Note
+import com.example.recoverylogger.domain.model.note.Note
 
 interface NotesRepository {
     suspend fun insert(note: Note)

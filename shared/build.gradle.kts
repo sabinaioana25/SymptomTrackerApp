@@ -67,6 +67,7 @@ kotlin {
 
     iosMain.dependencies {
       implementation(libs.sql.native.driver)
+      implementation(compose.ui)
     }
   }
 }

@@ -1,6 +1,6 @@
 package com.example.recoverylogger.android.data
 
-import com.example.recoverylogger.domain.model.Note
+import com.example.recoverylogger.domain.model.note.Note
 import com.example.recoverylogger.domain.repository.NotesRepository
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore

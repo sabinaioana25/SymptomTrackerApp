@@ -1,6 +1,6 @@
-package com.example.recoverylogger.presentation
+package com.example.recoverylogger.presentation.note
 
-import com.example.recoverylogger.domain.model.Note
+import com.example.recoverylogger.domain.model.note.Note
 import com.example.recoverylogger.domain.repository.NotesRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

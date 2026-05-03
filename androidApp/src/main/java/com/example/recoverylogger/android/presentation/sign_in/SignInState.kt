@@ -1,6 +1,6 @@
 package com.example.recoverylogger.android.presentation.sign_in
 
 data class SignInState(
-  val isSignInSuccessful: Boolean = false,
-  val signInError: String? = null
+  val isSuccess: Boolean = false,
+  val isError: String? = null
 )

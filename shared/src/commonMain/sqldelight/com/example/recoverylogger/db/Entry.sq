@@ -1,0 +1,38 @@
+-- Table name uses snake_case; SQLDelight generates a Kotlin class called RecoveryEntry
+-- to avoid clashing with the domain model Entry in a different package.
+-- Each question gets its own nullable column — cleaner than a serialised blob,
+-- and makes it trivial to query by symptom later.
+
+CREATE TABLE recovery_entry (
+    id              TEXT    PRIMARY KEY NOT NULL,
+    userId          TEXT    NOT NULL,
+    entryDate       INTEGER NOT NULL,
+    createdAt       INTEGER NOT NULL,
+    -- q1: heartburn scale 1–10
+    q1Heartburn          INTEGER,
+    -- q2: yes/no swallowing difficulty
+    q2Swallowing         TEXT,
+    -- q3: swallowing severity scale 1–10 (conditional on q2 = Yes)
+    q3SwallowingSeverity INTEGER,
+    -- q4: able to vomit (Yes / No / N/A)
+    q4Vomit              TEXT,
+    -- q5: bloating level (None / Mild / Moderate / Severe)
+    q5Bloating           TEXT,
+    -- q6–q8: free text
+    q6Diet               TEXT,
+    q7Medications        TEXT,
+    q8Concerns           TEXT
+);
+
+insertEntry:
+INSERT OR REPLACE INTO recovery_entry
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+getAllEntries:
+SELECT * FROM recovery_entry ORDER BY entryDate DESC;
+
+getEntriesByUser:
+SELECT * FROM recovery_entry WHERE userId = ? ORDER BY entryDate DESC;
+
+deleteEntry:
+DELETE FROM recovery_entry WHERE id = ?;

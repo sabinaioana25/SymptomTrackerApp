@@ -10,3 +10,11 @@ plugins {
   alias(libs.plugins.hilt).apply(false)
   alias(libs.plugins.ksp).apply(false)
 }
+
+subprojects {
+    configurations.all {
+        resolutionStrategy {
+            force("org.jetbrains.kotlin:kotlin-metadata-jvm:2.3.21")
+        }
+    }
+}
