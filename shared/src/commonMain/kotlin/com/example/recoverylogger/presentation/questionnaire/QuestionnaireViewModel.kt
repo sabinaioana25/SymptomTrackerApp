@@ -28,11 +28,11 @@ class QuestionnaireViewModel(
 
     fun processIntent(intent: QuestionnaireIntent) {
         when (intent) {
-            is QuestionnaireIntent.Answer    -> recordAnswer(intent.questionId, intent.value)
-            is QuestionnaireIntent.Next      -> goToNext()
-            is QuestionnaireIntent.Previous  -> goToPrevious()
-            is QuestionnaireIntent.Submit    -> submitEntry()
-            is QuestionnaireIntent.Back      -> Unit
+            is QuestionnaireIntent.Answer -> recordAnswer(intent.questionId, intent.value)
+            is QuestionnaireIntent.Next -> goToNext()
+            is QuestionnaireIntent.Previous -> goToPrevious()
+            is QuestionnaireIntent.Submit -> submitEntry()
+            is QuestionnaireIntent.Back -> Unit
             is QuestionnaireIntent.DismissError -> _state.update { it.copy(error = null) }
         }
     }

@@ -41,10 +41,10 @@ fun QuestionContent(
         Spacer(modifier = Modifier.height(20.dp))
 
         when (question.type) {
-            QuestionType.SCALE           -> ScaleInput(question, currentAnswer, onAnswer)
-            QuestionType.YES_NO          -> YesNoInput(currentAnswer, onAnswer)
+            QuestionType.SCALE -> ScaleInput(question, currentAnswer, onAnswer)
+            QuestionType.YES_NO -> YesNoInput(currentAnswer, onAnswer)
             QuestionType.MULTIPLE_CHOICE -> MultipleChoiceInput(question, currentAnswer, onAnswer)
-            QuestionType.TEXT            -> TextInput(currentAnswer, onAnswer)
+            QuestionType.TEXT -> TextInput(currentAnswer, onAnswer)
         }
     }
 }

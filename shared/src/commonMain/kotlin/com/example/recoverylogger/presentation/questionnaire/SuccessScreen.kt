@@ -45,7 +45,7 @@ fun SuccessScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "✓ Entry Submitted",
+            text = "Entry Submitted",
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF2E7D32)
