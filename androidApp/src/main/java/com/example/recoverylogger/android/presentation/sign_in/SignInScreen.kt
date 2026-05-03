@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -18,7 +19,8 @@ private const val SIGN_IN = "Sign In"
 @Composable
 fun SignInScreen(
   state: SignInState,
-  onSignInClick: () -> Unit
+  onSignInClick: () -> Unit,
+  modifier: Modifier = Modifier
 ) {
   val context = LocalContext.current
   LaunchedEffect(key1 = state.isError) {
@@ -31,14 +33,19 @@ fun SignInScreen(
     }
   }
 
-  Box(
-    modifier = Modifier
-      .fillMaxSize()
-      .padding(16.dp),
-    contentAlignment = Alignment.Center
-  ) {
-    Button(onClick = onSignInClick) {
-      Text(text = SIGN_IN)
+  Scaffold(
+    modifier = modifier.fillMaxSize()
+  ) { innerPadding ->
+    Box(
+      modifier = Modifier
+        .fillMaxSize()
+        .padding(innerPadding)
+        .padding(16.dp),
+      contentAlignment = Alignment.Center
+    ) {
+      Button(onClick = onSignInClick) {
+        Text(text = SIGN_IN)
+      }
     }
   }
 }

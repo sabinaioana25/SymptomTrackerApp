@@ -91,7 +91,7 @@ class QuestionnaireViewModel(
 
         val entry = Entry(
             id = Uuid.random().toString(),
-            userId = "anonymous",
+            userId = "current_user_id",
             entryDate = Clock.System.now().toEpochMilliseconds(),
             responses = s.answers
         )
