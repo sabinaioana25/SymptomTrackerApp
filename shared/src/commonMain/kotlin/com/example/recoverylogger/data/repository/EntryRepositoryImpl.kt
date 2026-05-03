@@ -39,6 +39,10 @@ class EntryRepositoryImpl(private val database: AppDatabase) : EntryRepository {
             q8Concerns = (entry.responses["q8_concerns"] as? Answer.Text)?.value
         )
     }
+
+    override suspend fun deleteEntry(entry: String) {
+      TODO("Not yet implemented")
+    }
 }
 
 // ---------------------------------------------------------------------------

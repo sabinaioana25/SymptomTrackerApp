@@ -5,4 +5,5 @@ import com.example.recoverylogger.domain.model.entry.Entry
 interface EntryRepository {
     suspend fun getEntries(): List<Entry>
     suspend fun saveEntry(entry: Entry)
+    suspend fun deleteEntry(entry: String)
 }
