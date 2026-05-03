@@ -15,12 +15,12 @@ class QuestionnaireAndroidViewModel @Inject constructor(
     saveEntryUseCase: SaveEntryUseCase
 ) : ViewModel() {
 
-    private val delegate = QuestionnaireViewModel(
+    val viewModel: QuestionnaireViewModel = QuestionnaireViewModel(
         saveEntryUseCase = saveEntryUseCase,
         scope = viewModelScope
     )
 
-    val state: StateFlow<QuestionnaireState> = delegate.state
-    fun processIntent(intent: QuestionnaireIntent) = delegate.processIntent(intent)
+    val state: StateFlow<QuestionnaireState> = viewModel.state
+    fun processIntent(intent: QuestionnaireIntent) = viewModel.processIntent(intent)
 
 }

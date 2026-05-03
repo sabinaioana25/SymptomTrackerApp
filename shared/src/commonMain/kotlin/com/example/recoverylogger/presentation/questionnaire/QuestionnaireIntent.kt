@@ -8,8 +8,3 @@ sealed interface QuestionnaireIntent {
     data object Back : QuestionnaireIntent
     data object DismissError : QuestionnaireIntent
 }
-
-sealed interface QuestionnaireNavEvent {
-    data object EntrySubmitted : QuestionnaireNavEvent
-    data object BackPressed : QuestionnaireNavEvent
-}
